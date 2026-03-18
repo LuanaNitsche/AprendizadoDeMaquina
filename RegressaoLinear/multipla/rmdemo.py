@@ -169,4 +169,11 @@ if __name__ == "__main__":
 
     for q in range(1, 6):
         p = regressao_multipla(beta, tamanho_casa, q)
-        print(f"  Quartos={q} -> Preco previsto: {p:.0f}")
+        print(f"  Quartos={q} = Preco: {p:.0f}")
+
+    """
+    Notamos que o preco tende a diminuir conforme a quantidade de quartos
+    A correlação é ruim
+    Temos poucos dados
+    A variância de preço para uma casa com a mesma quantidade de quartos é muito alta
+    """

@@ -95,3 +95,14 @@ if __name__ == '__main__':
         plt.title(f'{dataset} | r={r:.5f}  β0={beta0:.4f}  β1={beta1:.5f}')
         plt.legend()
         plt.show()
+
+    """
+    O dataset 2 não apresenta um bom ajuste utilizando regressão linear, pois ocorre underfitting. 
+    Isso significa que o modelo linear é simples demais para capturar o padrão dos dados, que possuem um comportamento não linear.
+    Para esse tipo de situação, o mais adequado seria utilizar um modelo mais complexo, como a regressão polinomial, 
+    que consegue representar melhor curvas e variações mais complexas.
+
+    O dataset 3 não é apropriado para regressão linear, nem para outros modelos preditivos, pois apresenta uma relação inconsistente entre as variáveis.
+    Apesar de poder existir alguma correlação, os dados não possuem uma relação causal significativa, caracterizando um caso clássico de “correlação não implica causalidade”.
+    Além disso, a distribuição dos pontos é inadequada para modelagem, o que compromete qualquer tentativa de ajuste confiável.
+    """
