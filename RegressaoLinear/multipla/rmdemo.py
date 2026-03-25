@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import pandas as pd
+from sklearn.linear_model import LinearRegression
 
 
 def gera_grafico_dispersao(x: list[float], y: list[float], label_x: str, label_y: str, titulo: str = 'Diagrama de dispersao'):
@@ -177,3 +178,22 @@ if __name__ == "__main__":
     Temos poucos dados
     A variância de preço para uma casa com a mesma quantidade de quartos é muito alta
     """
+
+    # Comparação com scikit-learn
+    x_sklearn = np.column_stack((v_tamanho, v_quarto))
+    modelo = LinearRegression()
+    modelo.fit(x_sklearn, v_preco)
+
+    beta0_sk = modelo.intercept_
+    beta1_sk, beta2_sk = modelo.coef_
+
+    print("\n--- Comparação dos coeficientes ---")
+    print(f"{'':20} {'Manual':>12} {'Scikit-learn':>12}")
+    print(f"{'β0 (intercepto)':20} {beta[0]:>12.4f} {beta0_sk:>12.4f}")
+    print(f"{'β1 (tamanho)':20} {beta[1]:>12.4f} {beta1_sk:>12.4f}")
+    print(f"{'β2 (quartos)':20} {beta[2]:>12.4f} {beta2_sk:>12.4f}")
+
+    preco_sk = modelo.predict([[tamanho_casa, quartos]])[0]
+    print(f"\nPrevisão para {tamanho_casa} m², {quartos} quartos:")
+    print(f"  Manual:       {preco:.0f}")
+    print(f"  Scikit-learn: {preco_sk:.0f}")
