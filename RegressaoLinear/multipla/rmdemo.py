@@ -111,7 +111,13 @@ if __name__ == "__main__":
     df = pd.read_csv(r"multipla\data.csv", header=None, names=['tamanho', 'quartos', 'preco'])
     dados = df.values.tolist()
 
-    print(df.describe())
+    print(df.describe()) # b
+
+    """
+    A média de preço é: R$ 340.412,76
+    A menor casa custa: R$ 169.900,00
+    A quantidade de quartos da casa mais cara: 5
+    """
 
     matriz, vetor_y = gera_matriz(dados)
 
@@ -121,8 +127,7 @@ if __name__ == "__main__":
     c_qua_prec = correlacao(v_quarto, v_preco)
     quaPrec0, quaPrec1 = regressao(v_quarto, v_preco)
 
-    # grafico de tamanho x preco
-    gera_grafico_dispersao(v_tamanho, v_preco, label_x='Tamanho', label_y='Preco')
+    gera_grafico_dispersao(v_tamanho, v_preco, label_x='Tamanho', label_y='Preco') # c e d
     x_linha_tam = [min(v_tamanho), max(v_tamanho)]
     y_linha_tam_prec = [tamPre0 + tamPre1 * xi for xi in x_linha_tam]
     plt.plot(x_linha_tam, y_linha_tam_prec, color='red', label='Reta de regressao')
@@ -130,8 +135,7 @@ if __name__ == "__main__":
     plt.legend()
     plt.show()
 
-    # grafico de quarto x preco
-    gera_grafico_dispersao(v_quarto, v_preco, label_x='Quartos', label_y='Preco')
+    gera_grafico_dispersao(v_quarto, v_preco, label_x='Quartos', label_y='Preco')  # c e d
     x_linha_qua = [min(v_quarto), max(v_quarto)]
     y_linha_qua_prec = [quaPrec0 + quaPrec1 * xi for xi in x_linha_qua]
     plt.plot(x_linha_qua, y_linha_qua_prec, color='red', label='Reta de regressao')
@@ -139,39 +143,39 @@ if __name__ == "__main__":
     plt.legend()
     plt.show()
 
-    beta = calcula_beta_multipla(matriz, vetor_y)
+    beta = calcula_beta_multipla(matriz, vetor_y) # e
 
-    tam_range = np.linspace(min(v_tamanho), max(v_tamanho), 20)
-    qua_range = np.linspace(min(v_quarto), max(v_quarto), 20)
-    TAM, QUA = np.meshgrid(tam_range, qua_range)
-    PRECO_SUPERFICIE = regressao_multipla(beta, TAM, QUA)
+    tam_range = np.linspace(min(v_tamanho), max(v_tamanho), 20) # e
+    qua_range = np.linspace(min(v_quarto), max(v_quarto), 20) # e
+    TAM, QUA = np.meshgrid(tam_range, qua_range) # e
+    PRECO_SUPERFICIE = regressao_multipla(beta, TAM, QUA) # e
 
-    figura = plt.figure()
-    ax = figura.add_subplot(111, projection='3d')
-    ax.scatter(v_tamanho, v_quarto, v_preco, color='blue', label='Dados')
-    ax.plot_surface(TAM, QUA, PRECO_SUPERFICIE, alpha=0.4, color='red')
+    figura = plt.figure() # e
+    ax = figura.add_subplot(111, projection='3d') # e
+    ax.scatter(v_tamanho, v_quarto, v_preco, color='blue', label='Dados') # e
+    ax.plot_surface(TAM, QUA, PRECO_SUPERFICIE, alpha=0.4, color='red') # f
 
-    ax.set_xlabel('Tamanho')
-    ax.set_ylabel('Quartos')
-    ax.set_zlabel('Preco')
-    ax.set_title(
+    ax.set_xlabel('Tamanho') # g
+    ax.set_ylabel('Quartos') # g
+    ax.set_zlabel('Preco') # g
+    ax.set_title( # g
         f'Dispersao 3D: Tamanho x Quartos x Preco\n'
         f'β0={beta[0]:.2f}  β1={beta[1]:.2f}  β2={beta[2]:.2f}\n'
         f'r(tam,preco)={c_tam_prec:.4f}  r(qua,preco)={c_qua_prec:.4f}'
     )
-    ax.legend()
-    plt.show()
+    ax.legend() # g
+    plt.show() # g
 
-    tamanho_casa = 1650
-    quartos = 3
-    preco = regressao_multipla(beta, tamanho_casa, quartos)
-    print(f"Preco previsto: {preco:.0f}")
+    tamanho_casa = 1650 # h
+    quartos = 3 # h
+    preco = regressao_multipla(beta, tamanho_casa, quartos)  # h
+    print(f"Preco previsto: {preco:.0f}") # h
 
-    for q in range(1, 6):
-        p = regressao_multipla(beta, tamanho_casa, q)
-        print(f"  Quartos={q} = Preco: {p:.0f}")
+    for q in range(1, 6): # i
+        p = regressao_multipla(beta, tamanho_casa, q) # i
+        print(f"  Quartos={q} = Preco: {p:.0f}") # i
 
-    """
+    """  # i
     Notamos que o preco tende a diminuir conforme a quantidade de quartos
     A correlação é ruim
     Temos poucos dados
