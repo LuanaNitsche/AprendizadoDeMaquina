@@ -1,6 +1,5 @@
 import math
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
@@ -179,7 +178,6 @@ if __name__ == "__main__":
     A variância de preço para uma casa com a mesma quantidade de quartos é muito alta
     """
 
-    # Comparação com scikit-learn
     x_sklearn = np.column_stack((v_tamanho, v_quarto))
     modelo = LinearRegression()
     modelo.fit(x_sklearn, v_preco)
@@ -197,3 +195,7 @@ if __name__ == "__main__":
     print(f"\nPrevisão para {tamanho_casa} m², {quartos} quartos:")
     print(f"  Manual:       {preco:.0f}")
     print(f"  Scikit-learn: {preco_sk:.0f}")
+
+    """
+    Notamos que os valores dos calculos que desenvolvemos e da biblioteca geram os mesmos resultados
+    """
