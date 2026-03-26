@@ -263,9 +263,9 @@ if __name__ == "__main__":
         y_pred_teste = calcula_y_regressao(coef, x_teste)
         r2_treino = r2_score(y_treino, y_pred_treino)
         r2_teste = r2_score(y_teste, y_pred_teste)
-        print(f"  N={grau}: R² treino={r2_treino:.4f}, R² teste={r2_teste:.4f}")
+        print(f"  N={grau}: R2 treino={r2_treino:.4f}, R2 teste={r2_teste:.4f}")
 
-    
+
     """
     l) Visto o cálculo do erro e do coeficiente de determinação, qual o modelo mais preciso neste caso? Explique sua resposta.
     R: O modelo mais preciso é aquele que apresenta menor EQM e maior R2 nos dados de teste,
