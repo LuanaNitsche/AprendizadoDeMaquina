@@ -191,10 +191,10 @@ if __name__ == "__main__":
     mse3 = calcula_eqm(vetor_y, coef3, vetor_x)
     mse8 = calcula_eqm(vetor_y, coef8, vetor_x)
 
-    print(f"MSE N=1: {mse1:.4f}")
-    print(f"MSE N=2: {mse2:.4f}")
-    print(f"MSE N=3: {mse3:.4f}")
-    print(f"MSE N=8: {mse8:.4f}")
+    print(f"\nEQM N=1: {mse1:.4f}")
+    print(f"EQM N=2: {mse2:.4f}")
+    print(f"EQM N=3: {mse3:.4f}")
+    print(f"EQM N=8: {mse8:.4f}")
 
 
     """
@@ -203,7 +203,7 @@ if __name__ == "__main__":
       e o resto como de treinamento.
     """
     dados_treino, dados_teste = divide_dados(dados, percentual_teste=0.1)
-    print(f"Total: {len(dados)} | Treino: {len(dados_treino)} | Teste: {len(dados_teste)}")
+    print(f"\nTotal: {len(dados)} | Treino: {len(dados_treino)} | Teste: {len(dados_teste)}")
 
 
     """
@@ -212,25 +212,25 @@ if __name__ == "__main__":
     x_treino, y_treino = gera_vetores(dados_treino)
 
     coef1 = np.polyfit(x_treino, y_treino, 1)
-    print(f"β0 = {coef1[1]:.4f}, β1 = {coef1[0]:.4f}")
-    gera_grafico_dispersao(x_treino, y_treino, "Valores X", "Valores Y", regressoes=[(coef1, 'r')])
+    print(f"\nβ0 = {coef1[1]:.4f}, β1 = {coef1[0]:.4f}")
+    gera_grafico_dispersao(x_treino, y_treino, "Valores X TREINO", "Valores Y TREINO", regressoes=[(coef1, 'r')])
 
     coef2 = np.polyfit(x_treino, y_treino, 2)
     print(f"β0 = {coef2[2]:.4f}, β1 = {coef2[1]:.4f}, β2 = {coef2[0]:.4f}")
-    gera_grafico_dispersao(x_treino, y_treino, "Valores X", "Valores Y", regressoes=[(coef2, 'g')])
+    gera_grafico_dispersao(x_treino, y_treino, "Valores X TREINO", "Valores Y TREINO", regressoes=[(coef2, 'g')])
 
     coef3 = np.polyfit(x_treino, y_treino, 3)
     print(f"β0 = {coef3[3]:.4f}, β1 = {coef3[2]:.4f}, β2 = {coef3[1]:.4f}, β3 = {coef3[0]:.4f}")
-    gera_grafico_dispersao(x_treino, y_treino, "Valores X", "Valores Y", regressoes=[(coef3, 'k')])
+    gera_grafico_dispersao(x_treino, y_treino, "Valores X TREINO", "Valores Y TREINO", regressoes=[(coef3, 'k')])
 
     coef8 = np.polyfit(x_treino, y_treino, 8)
-    gera_grafico_dispersao(x_treino, y_treino, "Valores X", "Valores Y", regressoes=[(coef8, 'y')])
+    gera_grafico_dispersao(x_treino, y_treino, "Valores X TREINO", "Valores Y TREINO", regressoes=[(coef8, 'y')])
 
     """
     Visualização dos graficos acima sobrepostos
     """
     gera_grafico_dispersao(
-        vetor_x, vetor_y, "Valores X", "Valores Y",
+        vetor_x, vetor_y, "Valores X TREINO", "Valores Y TREINO",
         titulo="i) Regressão Polinomial - Todos os graus (dados de treino)",
         regressoes=[(coef1, 'r'), (coef2, 'g'), (coef3, 'k'), (coef8, 'y')],
     )
@@ -246,10 +246,10 @@ if __name__ == "__main__":
     mse3 = calcula_eqm(y_teste, coef3, x_teste)
     mse8 = calcula_eqm(y_teste, coef8, x_teste)
 
-    print(f"MSE N=1: {mse1:.4f}")
-    print(f"MSE N=2: {mse2:.4f}")
-    print(f"MSE N=3: {mse3:.4f}")
-    print(f"MSE N=8: {mse8:.4f}")
+    print(f"\nEQM TREINO N=1: {mse1:.4f}")
+    print(f"EQM TREINO N=2: {mse2:.4f}")
+    print(f"EQM TREINO N=3: {mse3:.4f}")
+    print(f"EQM TREINO N=8: {mse8:.4f}")
 
 
     """
@@ -263,7 +263,7 @@ if __name__ == "__main__":
         y_pred_teste = calcula_y_regressao(coef, x_teste)
         r2_treino = r2_score(y_treino, y_pred_treino)
         r2_teste = r2_score(y_teste, y_pred_teste)
-        print(f"  N={grau}: R2 treino={r2_treino:.4f}, R2 teste={r2_teste:.4f}")
+        print(f"\n N={grau}: R2 treino={r2_treino:.4f}, R2 teste={r2_teste:.4f}")
 
 
     """
