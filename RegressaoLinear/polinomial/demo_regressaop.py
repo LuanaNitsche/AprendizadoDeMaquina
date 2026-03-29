@@ -185,6 +185,10 @@ if __name__ == "__main__":
 
     """
     g) Calcule o erro quadratico medio para cada regressao
+
+    O modelo mais preciso é o de grau 8, pois apresentou o menor valor de Erro Quadrático Médio. Isso indica que ele possui o melhor ajuste aos dados observados.
+
+    Entretanto, ao aumentar o grau do polinômio, o modelo se torna mais complexo e pode ocorrer overfitting, ou seja, o modelo passa a se ajustar muito bem aos dados de treinamento, mas pode não generalizar bem para novos dados.
     """
     mse1 = calcula_eqm(vetor_y, coef1, vetor_x)
     mse2 = calcula_eqm(vetor_y, coef2, vetor_x)
@@ -255,7 +259,9 @@ if __name__ == "__main__":
     """
     k) Calcule o R² para os dados de treino e teste (sklearn.metrics.r2_score).
     Conclusão: modelos com R² alto no treino mas baixo no teste indicam overfitting.
-    N=8 tende a decorar os dados de treino e generalizar mal para o teste.
+    O modelo com N = 8 apresentou o melhor resultado geral, pois obteve o maior R² no teste, indicando maior capacidade de generalização.
+
+    Isso mostra que escolher o grau do polinômio é essencial para evitar underfitting e overfitting.
     """
     print("\nR2 - Treino vs Teste:")
     for grau, coef in [(1, coef1), (2, coef2), (3, coef3), (8, coef8)]:
