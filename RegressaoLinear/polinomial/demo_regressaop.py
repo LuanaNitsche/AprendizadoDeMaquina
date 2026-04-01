@@ -10,16 +10,6 @@ def retorna_dados(caminho:str):
     """
     return pd.read_csv(caminho, header=None, names=['x', 'y'])
 
-def gera_matriz(dados: list[list]) -> tuple[list[list], list]:
-    X: list[list] = []
-    y: list = []
-
-    for linha in dados:
-        X.append([1, linha[0], linha[1]])
-        y.append(linha[2])
-
-    return np.array(X), np.array(y)
-
 
 def calcula_y_regressao(coef: list, x: list[float]) -> list[float]:
     """
@@ -187,18 +177,17 @@ if __name__ == "__main__":
     g) Calcule o erro quadratico medio para cada regressao
 
     O modelo mais preciso é o de grau 8, pois apresentou o menor valor de Erro Quadrático Médio. Isso indica que ele possui o melhor ajuste aos dados observados.
-
     Entretanto, ao aumentar o grau do polinômio, o modelo se torna mais complexo e pode ocorrer overfitting, ou seja, o modelo passa a se ajustar muito bem aos dados de treinamento, mas pode não generalizar bem para novos dados.
     """
-    mse1 = calcula_eqm(vetor_y, coef1, vetor_x)
-    mse2 = calcula_eqm(vetor_y, coef2, vetor_x)
-    mse3 = calcula_eqm(vetor_y, coef3, vetor_x)
-    mse8 = calcula_eqm(vetor_y, coef8, vetor_x)
+    mse1B = calcula_eqm(vetor_y, coef1, vetor_x)
+    mse2B = calcula_eqm(vetor_y, coef2, vetor_x)
+    mse3B = calcula_eqm(vetor_y, coef3, vetor_x)
+    mse8B = calcula_eqm(vetor_y, coef8, vetor_x)
 
-    print(f"\nEQM N=1: {mse1:.4f}")
-    print(f"EQM N=2: {mse2:.4f}")
-    print(f"EQM N=3: {mse3:.4f}")
-    print(f"EQM N=8: {mse8:.4f}")
+    print(f"\nEQM N=1: {mse1B:.4f}")
+    print(f"EQM N=2: {mse2B:.4f}")
+    print(f"EQM N=3: {mse3B:.4f}")
+    print(f"EQM N=8: {mse8B:.4f}")
 
 
     """
@@ -228,6 +217,7 @@ if __name__ == "__main__":
     gera_grafico_dispersao(x_treino, y_treino, "Valores X TREINO", "Valores Y TREINO", regressoes=[(coef3, 'k')])
 
     coef8 = np.polyfit(x_treino, y_treino, 8)
+    print(f"β0 = {coef8[8]:.4f}, β1 = {coef8[7]:.4f}, β2 = {coef8[6]:.4f}, β3 = {coef8[5]:.4f}")
     gera_grafico_dispersao(x_treino, y_treino, "Valores X TREINO", "Valores Y TREINO", regressoes=[(coef8, 'y')])
 
     """
@@ -245,22 +235,22 @@ if __name__ == "__main__":
     """
     x_teste, y_teste = gera_vetores(dados_teste)
 
-    mse1 = calcula_eqm(y_teste, coef1, x_teste)
-    mse2 = calcula_eqm(y_teste, coef2, x_teste)
-    mse3 = calcula_eqm(y_teste, coef3, x_teste)
-    mse8 = calcula_eqm(y_teste, coef8, x_teste)
+    mse1T = calcula_eqm(y_teste, coef1, x_teste)
+    mse2T = calcula_eqm(y_teste, coef2, x_teste)
+    mse3T = calcula_eqm(y_teste, coef3, x_teste)
+    mse8T = calcula_eqm(y_teste, coef8, x_teste)
 
-    print(f"\nEQM TREINO N=1: {mse1:.4f}")
-    print(f"EQM TREINO N=2: {mse2:.4f}")
-    print(f"EQM TREINO N=3: {mse3:.4f}")
-    print(f"EQM TREINO N=8: {mse8:.4f}")
+    print(f"\nEQM TESTE N=1: {mse1T:.4f}")
+    print(f"EQM TESTE N=2: {mse2T:.4f}")
+    print(f"EQM TESTE N=3: {mse3T:.4f}")
+    print(f"EQM TESTE N=8: {mse8T:.4f}")
 
 
     """
     k) Calcule o R² para os dados de treino e teste (sklearn.metrics.r2_score).
+    
     Conclusão: modelos com R² alto no treino mas baixo no teste indicam overfitting.
     O modelo com N = 8 apresentou o melhor resultado geral, pois obteve o maior R² no teste, indicando maior capacidade de generalização.
-
     Isso mostra que escolher o grau do polinômio é essencial para evitar underfitting e overfitting.
     """
     print("\nR2 - Treino vs Teste:")
@@ -321,3 +311,16 @@ if __name__ == "__main__":
     perdendo toda capacidade de generalização. Modelos de grau 2 ou 3
     costumam equilibrar melhor viés e variância, resultando em menor EQM de teste.
     """
+
+    """Comparacao eqm e r2 de base, treino e teste para cada grau de regressao"""
+    print("\nComparação EQM e R2 - Base vs Treino vs Teste:")
+    for grau, coef, eqm_base in [(1, coef1, mse1B), (2, coef2, mse2B), (3, coef3, mse3B), (8, coef8, mse8B)]:
+        eqm_treino = calcula_eqm(y_treino, coef, x_treino)
+        eqm_teste  = calcula_eqm(y_teste,  coef, x_teste)
+        r2_treino  = r2_score(y_treino, calcula_y_regressao(coef, x_treino))
+        r2_teste   = r2_score(y_teste,  calcula_y_regressao(coef, x_teste))
+        print(f"N={grau:2d}: EQM BASE={eqm_base:.4f} | EQM TREINO={eqm_treino:.4f} | EQM TESTE={eqm_teste:.4f} | \nR2 TREINO={r2_treino:.4f} | R2 TESTE={r2_teste:.4f}\n")
+
+    r2_20_treino = r2_score(y_treino, calcula_y_regressao(coef20, x_treino))
+    r2_20_teste  = r2_score(y_teste,  calcula_y_regressao(coef20, x_teste))
+    print(f"N=20: EQM BASE=  N/A  | EQM TREINO={mse20_treino:.4f} | EQM TESTE={mse20_teste:.4f} | \nR2 TREINO={r2_20_treino:.4f} | R2 TESTE={r2_20_teste:.4f}\n")
