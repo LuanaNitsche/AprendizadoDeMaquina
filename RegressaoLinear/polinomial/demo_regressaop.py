@@ -267,7 +267,7 @@ if __name__ == "__main__":
     R: O modelo mais preciso é aquele que apresenta menor EQM e maior R2 nos dados de teste,
     por conta da generalização e não memorização.
     Mesmo que N=8 tenha o menor EQM de treinamento nos dados de teste ele tende a ter EQM maior e R2 menor do que N=2 ou N=3,
-    indicando overfitting. Portanto, o modelo de grau 2 ou 3 costuma ser o mais
+    indicando overfitting. Portanto, o modelo de grau 3 costuma ser o mais
     preciso neste caso: equilibra bem o ajuste aos dados sem decorar ruídos,
     resultando no melhor desempenho de generalização
     """
@@ -308,7 +308,7 @@ if __name__ == "__main__":
     pois praticamente memoriza os pontos (overfitting). Porém, nos dados
     de teste o EQM tende a ser muito alto, pior do que modelos de menor grau.
     A curva de grau 20 oscila violentamente entre os pontos de treino, 
-    perdendo toda capacidade de generalização. Modelos de grau 2 ou 3
+    perdendo toda capacidade de generalização. Modelos de grau 3
     costumam equilibrar melhor viés e variância, resultando em menor EQM de teste.
     """
 
