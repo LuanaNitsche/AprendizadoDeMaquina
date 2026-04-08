@@ -9,7 +9,7 @@ grupoTrain, grupoTest, trainRots, testRots = knn.carregarDados(
 
 rotuloPrevisto = knn.meuKnn(grupoTrain, trainRots, grupoTest, k=1)
 print("Q3.1 — k=1, sem normalização:")
-print(knn.acuracia(rotuloPrevisto, testRots))
+knn.acuracia(rotuloPrevisto, testRots)
 
 print("\nQ3.2 — diferentes k com normalização:")
 grupoTrainN, grupoTestN, trainRots, testRots = knn.carregarDados(
