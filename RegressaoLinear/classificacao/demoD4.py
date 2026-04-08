@@ -55,11 +55,13 @@ muito grandes pesa desproporcionalmente na distância. Só normalizar já melhor
 com as quatro dimensões a acurácia ainda fica abaixo de 92% (no máximo cerca de 83%
 nos testes com k). (2) Atributos que prejudicam o k-NN: as dimensões 2 e 3 adicionam
 variação que não separa bem as classes neste espaço e acabam “puxando” vizinhos
-errados quando usadas junto com as outras. Ao manter apenas as features [0, 1],
+errados quando usadas junto com as outras (mesma média ≈ 0.50 e desvio padrão ≈ 0.29 em todas as classes). Incluí-las no cálculo de distância adiciona variação aleatória
+que prejudica a classificação. Ao manter apenas as features [0, 1],
 aplicar normalização min-max (parâmetros do treino, aplicados ao teste) e usar por
 exemplo k = 1 (ou outros k indicados no script), a acurácia sobe para cerca de 93%,
 acima do alvo de 92%.
 
+OBS: Os nomes das variáveis estão diferentes neste dataset:
 
 grupoTest=testSet;
 grupoTrain=trainSet;
