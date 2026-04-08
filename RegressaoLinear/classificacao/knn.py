@@ -8,9 +8,6 @@ class KNN:
     Classificador K-Nearest Neighbours.
     """
 
-    def __init__(self):
-        pass
-
     def carregarDados(
         self, caminho: str, normalizar: bool = False
     ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
