@@ -4,7 +4,7 @@ from knn import KNN
 knn = KNN()
 
 grupoTrain, grupoTest, trainRots, testRots = knn.carregarDados(
-    "classificacao/grupoDados2.mat", normalizar=True
+    "grupoDados2.mat", normalizar=True
 )
 
 for k in range(1, 9):

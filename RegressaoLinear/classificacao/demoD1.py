@@ -3,7 +3,7 @@ import numpy as np
 
 knn = KNN()
 grupoTrain, grupoTest, trainRots, testRots = knn.carregarDados(
-    "classificacao/grupoDados1.mat"
+    "grupoDados1.mat"
 )
 grupoTrain, grupoTest = knn.normalizacao(grupoTrain, grupoTest)
 

@@ -4,7 +4,7 @@ import numpy as np
 knn = KNN()
 
 grupoTrain, grupoTest, trainRots, testRots = knn.carregarDados(
-    "classificacao/grupoDados3.mat"
+    "grupoDados3.mat"
 )
 
 rotuloPrevisto = knn.meuKnn(grupoTrain, trainRots, grupoTest, k=1)
@@ -13,7 +13,7 @@ knn.acuracia(rotuloPrevisto, testRots)
 
 print("\nQ3.2 — diferentes k com normalização:")
 grupoTrainN, grupoTestN, trainRots, testRots = knn.carregarDados(
-    "classificacao/grupoDados3.mat", normalizar=True
+    "grupoDados3.mat", normalizar=True
 )
 
 for k in range(1, 11):
