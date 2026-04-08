@@ -1,4 +1,22 @@
-# DADOS 2
+import numpy as np
+from knn import KNN
+
+knn = KNN()
+
+grupoTrain, grupoTest, trainRots, testRots = knn.carregarDados(
+    "classificacao/grupoDados2.mat", normalizar=True
+)
+
+for k in range(1, 9):
+    rotuloPrevisto = knn.meuKnn(grupoTrain, trainRots, grupoTest, k)
+    acc = np.mean(rotuloPrevisto == testRots)
+    print(f"k={k} -> acurácia={acc:.4f}")
+
+rotuloK3 = knn.meuKnn(grupoTrain, trainRots, grupoTest, 3)
+acuracia = knn.acuracia(rotuloK3, testRots)
+
+knn.visualizaPontos(grupoTrain, trainRots, 0, 1)
+
 """
 Q2.1: Aplique seu kNN a este problema. Qual é a sua acurácia de classificação?
 R: Aplicando o algoritmo k-NN com k = 1, foi obtida uma acurácia de aproximadamente 96,67% (58 acertos em 60 amostras).
@@ -12,139 +30,3 @@ Com valores de k ≥ 3, a acurácia já atingiu aproximadamente 98,33%, e para k
 
 Portanto, o ajuste do parâmetro k foi suficiente para aumentar significativamente a acurácia do modelo.
 """
-
-import numpy as np
-import scipy.io as scipy
-import matplotlib.pyplot as plt
-
-def normalizacao(dadosTrain, dadosTest):
-    min_vals = np.min(dadosTrain, axis=0)
-    max_vals = np.max(dadosTrain, axis=0)
-
-    dadosTrain_norm = (dadosTrain - min_vals) / (max_vals - min_vals)
-    dadosTest_norm = (dadosTest - min_vals) / (max_vals - min_vals)
-
-    return dadosTrain_norm, dadosTest_norm
-
-def dist(a, b):
-    return np.sum((a - b) ** 2)
-
-def meuKnn(dadosTrain, rotuloTrain, dadosTeste, k=1):
-
-    '''
-    Para cada ponto de teste, ele:
-
-        mede a distância até todos os pontos de treino
-        pega o mais próximo
-        copia o rótulo
-    '''
-    rotulos_previstos = []
-
-    for teste in dadosTeste:
-        # Calcula distância euclidiana (sem sqrt)
-        distancias = np.array([dist(teste, treino) for treino in dadosTrain])
-
-        # Ordena e pega índices
-        ind = np.argsort(distancias)
-
-        # Seleciona os k vizinhos mais próximos
-        vizinhos = rotuloTrain[ind[:k]]
-
-        # Se k = 1 → pega direto
-        if k == 1:
-            rotulos_previstos.append(vizinhos[0])
-        else:
-            # votação por maioria
-            valores, contagens = np.unique(vizinhos, return_counts=True)
-            rotulos_previstos.append(valores[np.argmax(contagens)])
-
-    return np.array(rotulos_previstos)
-
-def getDadosRotulo(dados, rotulos, rotulo, indice):
-    ret = []
-
-    for idx in range(len(dados)):
-        if rotulos[idx] == rotulo:
-            ret.append(dados[idx][indice])
-
-    return ret
-
-
-# =========================
-# Carregar dados
-# =========================
-mat = scipy.loadmat('RegressaoLinear/classificacao/grupoDados2.mat')
-
-grupoTrain = mat['grupoTrain']
-grupoTest = mat['grupoTest']
-trainRots = mat['trainRots']
-testRots = mat['testRots']
-
-# ⚠️ Ajuste importante: transformar rótulos em vetor 1D
-trainRots = trainRots.flatten()
-testRots = testRots.flatten()
-
-# grupoTrain, grupoTest = normalizacao(grupoTrain, grupoTest)
-
-# =========================
-# Rodar KNN
-# =========================
-# =========================
-# Testar vários valores de k
-# =========================
-for k in range(1, 9):
-    rotuloPrevisto = meuKnn(grupoTrain, trainRots, grupoTest, k)
-    acc = np.mean(rotuloPrevisto == testRots)
-    print(f"k={k} -> acurácia={acc:.4f}")
-
-# =========================
-# Calcular acurácia
-# =========================
-
-# Compara com a resposta correta
-#Isso gera algo tipo:
-
-# [True, True, False, True, ...]
-estaCorreto = rotuloPrevisto == testRots
-numCorreto = np.sum(estaCorreto)
-totalNum = len(testRots)
-
-acuracia = numCorreto / totalNum
-
-# =========================
-# Resultado
-# =========================
-print("Número de acertos:", numCorreto)
-print("Total:", totalNum)
-print("Acurácia:", acuracia)
-
-
-
-def visualizaPontos(dados, rotulos, d1, d2):
-    fig, ax = plt.subplots()
-
-    ax.scatter(
-        getDadosRotulo(dados, rotulos, 1, d1),
-        getDadosRotulo(dados, rotulos, 1, d2),
-        c='red', marker='^', label='Classe 1'
-    )
-
-    ax.scatter(
-        getDadosRotulo(dados, rotulos, 2, d1),
-        getDadosRotulo(dados, rotulos, 2, d2),
-        c='blue', marker='+', label='Classe 2'
-    )
-
-    ax.scatter(
-        getDadosRotulo(dados, rotulos, 3, d1),
-        getDadosRotulo(dados, rotulos, 3, d2),
-        c='green', marker='.', label='Classe 3'
-    )
-
-    ax.set_xlabel(f'Dimensão {d1}')
-    ax.set_ylabel(f'Dimensão {d2}')
-    ax.legend()
-
-    plt.show()
-
-visualizaPontos(grupoTrain, trainRots, 0, 1)
