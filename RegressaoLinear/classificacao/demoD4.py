@@ -16,7 +16,7 @@ knn.acuracia(rotuloPrevisto, testRots)
 
 # ----- Diagnóstico Q4.2: normalizar tudo ainda não chega a 92% -----
 grupoTrainN, grupoTestN, trainRots, testRots = knn.carregarDados(
-    "grupoDados4.mat", normalizar=True
+    "grupoDados4.mat", tipo="normalizar"
 )
 print("\nQ4.2 — todas as features normalizadas (varredura de k):")
 for k in range(1, 11):
