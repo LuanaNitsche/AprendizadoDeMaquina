@@ -39,6 +39,14 @@ for k in range(1, 11):
         knn.visualizaPontos(grupoTrain_selN, trainRots, 0, 1)
         break
 
+# ===== Visualização [1,2] =====
+grupoTrain_12 = grupoTrain[:, [1, 2]]
+grupoTest_12 = grupoTest[:, [1, 2]]
+grupoTrain_12N, grupoTest_12N = knn.normalizacao(grupoTrain_12, grupoTest_12)
+
+print("\nVisualização — features [1,2]:")
+knn.visualizaPontos(grupoTrain_12N, trainRots, 0, 1)
+
 """
 Q4.1: Aplique seu algoritmo K-NN ao problema. Qual é a sua acurácia de classificação?
 R: Com k = 1, todas as quatro características e sem normalização, a acurácia fica em
@@ -60,6 +68,10 @@ que prejudica a classificação. Ao manter apenas as features [0, 1],
 aplicar normalização min-max (parâmetros do treino, aplicados ao teste) e usar por
 exemplo k = 1 (ou outros k indicados no script), a acurácia sobe para cerca de 93%,
 acima do alvo de 92%.
+
+A análise visual dos dados também reforça esse comportamento.
+Ao observar as dimensões [0,1], nota-se uma melhor separação entre as classes, o que favorece o desempenho do k-NN.
+Por outro lado, ao considerar dimensões como [1,2], a separação entre as classes se torna menos evidente, indicando que nem todas as features contribuem positivamente para a classificação.
 
 OBS: Os nomes das variáveis estão diferentes neste dataset:
 
