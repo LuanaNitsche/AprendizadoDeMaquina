@@ -9,7 +9,7 @@ class KNN:
     """
 
     def carregarDados(
-        self, caminho: str, normalizar: bool = False
+        self, caminho: str, tipo: str = None
     ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """
         Carrega um arquivo .mat e retorna (grupoTrain, grupoTest, trainRots, testRots).
@@ -38,8 +38,10 @@ class KNN:
         trainRots = trainRots.flatten()
         testRots = testRots.flatten()
 
-        if normalizar:
+        if tipo == "normalizar":
             grupoTrain, grupoTest = self.normalizacao(grupoTrain, grupoTest)
+        elif tipo == "padronizar":
+            grupoTrain, grupoTest = self.padronizacao(grupoTrain, grupoTest)
 
         return grupoTrain, grupoTest, trainRots, testRots
 
@@ -63,6 +65,27 @@ class KNN:
         dadosTest_norm = (dadosTest - min_vals) / (max_vals - min_vals)
 
         return dadosTrain_norm, dadosTest_norm
+
+    def padronizacao(
+        self, dadosTrain: np.ndarray, dadosTest: np.ndarray
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Padronização (z-score) usando média e desvio padrão do treino.
+
+        Args:
+            dadosTrain (np.ndarray)
+            dadosTest (np.ndarray)
+
+        Returns:
+            tuple[np.ndarray, np.ndarray]
+        """
+        media = np.mean(dadosTrain, axis=0)
+        desvio = np.std(dadosTrain, axis=0)
+
+        dadosTrain_pad = (dadosTrain - media) / desvio
+        dadosTest_pad = (dadosTest - media) / desvio
+
+        return dadosTrain_pad, dadosTest_pad
 
     def dist(self, a: np.ndarray, b: np.ndarray) -> float:
         """
