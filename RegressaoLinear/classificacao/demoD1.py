@@ -5,7 +5,6 @@ knn = KNN()
 grupoTrain, grupoTest, trainRots, testRots = knn.carregarDados(
     "grupoDados1.mat"
 )
-grupoTrain, grupoTest = knn.normalizacao(grupoTrain, grupoTest)
 
 # Teste com k=1
 rotuloPrevisto = knn.meuKnn(grupoTrain, trainRots, grupoTest, k=1)
@@ -30,7 +29,7 @@ print("\n--- Teste variando k ---")
 melhor_k = 0
 melhor_acc = 0
 
-for k in range(1, 9):
+for k in range(1, 11):
     rotuloPrevisto = knn.meuKnn(grupoTrain, trainRots, grupoTest, k)
     acc = np.mean(rotuloPrevisto == testRots)
     print(f"k={k} -> acurácia={acc:.4f}")
