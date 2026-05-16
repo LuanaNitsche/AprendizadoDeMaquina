@@ -1,0 +1,68 @@
+introdução:
+
+Introdução
+O câncer de mama é uma das neoplasias malignas mais
+incidentes no mundo, sendo o diagnóstico precoce fator
+determinante para melhores prognósticos. Técnicas de
+aprendizado de máquina têm se mostrado promissoras no
+auxílio ao diagnóstico clínico, permitindo classificar tumores
+como malignos ou benignos a partir de características
+extraídas de imagens citológicas [1].
+O algoritmo K-Nearest Neighbors (KNN) é um dos métodos
+mais intuitivos de aprendizado supervisionado. Baseado no
+princípio de similaridade, classifica uma nova amostra pela
+maioria dos rótulos entre seus k vizinhos mais próximos no
+espaço de features [2]. Por não assumir distribuição dos dados,
+é amplamente utilizado em problemas médicos.
+Um aspecto crítico no KNN é a sensibilidade à escala das
+features: variáveis em escalas muito distintas distorcem o
+cálculo da distância euclidiana, tornando o pré-processamento
+essencial [3]. Este trabalho investiga o efeito da normalização e
+da padronização no desempenho do classificador, além da
+busca por subconjuntos de features mais discriminativos.
+
+
+Conjunto de Dados
+O Wisconsin Breast Cancer Dataset, disponível no repositório
+UCI Machine Learning, contém medições computadorizadas de
+núcleos celulares obtidas por punção aspirativa com agulha
+fina (PAAF) [4].
+Total de amostras 569
+Features numéricas 30
+Classes M (212) / B (357)
+Divisão treino/teste 80% / 20%
+Semente aleatória random_state = 42
+As 30 features são derivadas de 10 medidas base (raio,
+textura, perímetro, área, suavidade, compacidade,
+concavidade, pontos côncavos, simetria e dimensão fractal),
+cada uma calculada como média, erro padrão e pior valor. Uma
+coluna vazia (Unnamed: 32) foi removida durante o préprocessamento.
+
+
+
+Referências Bibliográficas
+
+[1]STREET, W. N.; WOLBERG, W. H.; MANGASARIAN, O. L.
+Nuclear feature extraction for breast tumor diagnosis. IS&T/SPIE Symposium on Electronic Imaging, v. 1905, p. 861–870, 1993.
+Disponível em: https://www.semanticscholar.org/paper/Nuclear-feature-extraction-for-breast-tumor-Street-Wolberg/53f0fbb425bc14468eb3bf96b2e1d41ba8087f36
+Acesso em: 16 maio 2026.
+
+[2]MITCHELL, T. M.
+Machine Learning. McGraw-Hill, 1997. cap. 8 – Instance-Based Learning.
+Disponível em: https://www.cs.cmu.edu/~tom/files/MachineLearningTomMitchell.pdf
+Acesso em: 17 maio 2026.
+
+[3]GÉRON, A.
+Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow. 3. ed. O’Reilly Media, 2022.
+Disponível em: https://www.oreilly.com/library/view/hands-on-machine-learning/9781098125967/
+Acesso em: 16 maio 2026.
+
+[4]UCI Machine Learning Repository.
+Breast Cancer Wisconsin (Diagnostic) Data Set.
+Disponível em: https://www.kaggle.com/datasets/krupadharamshi/breast-cancer-dataset/data
+Acesso em: abril 2025.
+
+[5]DUDA, R. O.; HART, P. E.; STORK, D. G.
+Pattern Classification. 2. ed. Wiley-Interscience, 2000.
+Disponível em: https://www.researchgate.net/publication/228058014_Pattern_Classification
+Acesso em: 17 maio 2026.
