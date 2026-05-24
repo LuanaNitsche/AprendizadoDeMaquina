@@ -55,6 +55,29 @@ Metodologia
 5: Análise de subsets: subconjuntos de 2 features testados com normalização e padronização — inicialmente os pares [0,1] e [1,2], e depois para as melhores features encontradas [23,29].
 6: Implementação: KNN implementado manualmente em Python (classe KNN), sem uso de bibliotecas de ML para o classificador principal, respeitando o objetivo pedagógico do experimento.
 
+Resultados
+TODAS AS FEATURES
+Pré-processamento	Melhor k	Acurácia
+Sem processamento	k = 5	95,61%
+Padronização (z-score)	k = 4	95,61%
+Normalização (min-max)	k = 2	97,37%
+SUBCONJUNTOS DE 2 FEATURES
+Subset	Pré-proc.	k	Acurácia
+[0,1] radius / texture	Norm.	2	92,11%
+[1,2] texture / perim.	Norm.	5	94,74%
+[0,1] radius / texture	Pad.	8	92,11%
+[1,2] texture / perim.	Pad.	5	94,74%
+[23,29] area_w / frac_w	Norm.	1	100,00%
+[23,29] area_w / frac_w	Pad.	1	100,00%
+
+
+
+Conclusão
+O experimento demonstrou que a combinação normalização min-max + KNN com k=2 é a configuração mais robusta para o dataset completo, atingindo 97,37% de acurácia. A limpeza dos dados — especialmente a remoção da coluna vazia — foi decisiva para o funcionamento correto do algoritmo.
+
+A descoberta mais relevante foi que apenas 2 features (area_worst e fractal_dimension_worst) são suficientes para separar quase perfeitamente os tumores malignos dos benignos, superando o modelo treinado com as 30 features.
+
+Assim: área grande + dimensão fractal elevada = tumor com núcleo grande e contorno irregular, que são características associadas a células cancerosas agressivas(maligno).
 
 
 Referências Bibliográficas
