@@ -1,50 +1,34 @@
 introdução:
 
-Introdução
-O câncer de mama é uma das neoplasias malignas mais
-incidentes no mundo, sendo o diagnóstico precoce fator
-determinante para melhores prognósticos. Técnicas de
-aprendizado de máquina têm se mostrado promissoras no
-auxílio ao diagnóstico clínico, permitindo classificar tumores
-como malignos ou benignos a partir de características
-extraídas de imagens citológicas [1].
-O algoritmo K-Nearest Neighbors (KNN) é um dos métodos
-mais intuitivos de aprendizado supervisionado. Baseado no
-princípio de similaridade, classifica uma nova amostra pela
-maioria dos rótulos entre seus k vizinhos mais próximos no
-espaço de features [2]. Por não assumir distribuição dos dados,
-é amplamente utilizado em problemas médicos.
-Um aspecto crítico no KNN é a sensibilidade à escala das
-features: variáveis em escalas muito distintas distorcem o
-cálculo da distância euclidiana, tornando o pré-processamento
-essencial [3]. Este trabalho investiga o efeito da normalização e
-da padronização no desempenho do classificador, além da
-busca por subconjuntos de features mais discriminativos.
+O câncer de mama é uma das neoplasias malignas de maior incidência mundial, representando um sério desafio de saúde pública. Segundo dados da Organização Mundial da Saúde, é o tipo de câncer mais diagnosticado entre mulheres em todo o mundo [1]. O diagnóstico precoce é fator determinante para melhores prognósticos, porém o processo tradicional — baseado em análise histopatológica e avaliação subjetiva de especialistas — está sujeito a variabilidade entre observadores e pode ser demorado. Nesse contexto, técnicas de aprendizado de máquina surgem como alternativas promissoras para apoio ao diagnóstico clínico, permitindo classificar tumores automaticamente a partir de características mensuráveis extraídas de imagens citológicas [2].
+
+Este trabalho investiga a seguinte pergunta de pesquisa: é possível classificar tumores mamários como malignos ou benignos com alta acurácia utilizando algoritmos clássicos de aprendizado de máquina? Para isso, utilizou-se o Wisconsin Breast Cancer Dataset (WBCD), disponível no repositório UCI Machine Learning Repository, composto por 569 amostras com 30 atributos numéricos derivados de imagens de punção aspirativa por agulha fina (PAAF), rotuladas como benigno (357 casos) ou maligno (212 casos) [3].
+
+O algoritmo selecionado para este estudo foi o K-Nearest Neighbors (KNN), um método de aprendizado supervisionado que classifica uma nova amostra com base na maioria dos rótulos entre seus k vizinhos mais próximos no espaço de atributos, sem assumir uma distribuição prévia dos dados [4]. Devido à sua simplicidade, interpretabilidade e bom desempenho em problemas de classificação, o KNN mostra-se adequado para a tarefa proposta.
+
+Neste trabalho, foram avaliadas diferentes abordagens de pré-processamento dos dados, incluindo a ausência de tratamento, normalização min-max e padronização (z-score), considerando a sensibilidade do KNN à escala das variáveis. Além disso, o hiperparâmetro k foi ajustado empiricamente no intervalo de 1 a 8, utilizando divisão simples entre conjuntos de treino (80%) e teste (20%).
+
+Como principal contribuição, este estudo apresenta uma análise comparativa do desempenho do KNN sob diferentes técnicas de pré-processamento e também avalia o impacto da seleção de subconjuntos de atributos na acurácia do modelo. Os resultados indicam que a normalização dos dados proporcionou o melhor desempenho geral, alcançando acurácia de 97,37% com k=2. Além disso, observou-se que determinados subconjuntos de atributos podem apresentar desempenho competitivo, destacando-se o par de atributos [23,29], que atingiu acurácia de 100% no conjunto de teste.
+
+Como limitações, destaca-se o uso de uma única divisão treino-teste, o que pode introduzir viés nos resultados, além do tamanho moderado do dataset e da ausência de validação externa. Ademais, o custo computacional do KNN cresce com o número de amostras, podendo limitar sua aplicação em cenários com grandes volumes de dados. Ainda assim, os resultados obtidos demonstram que o KNN é uma abordagem eficaz para a classificação de tumores mamários com base em atributos citológicos.
 
 
-Conjunto de Dados
-O Wisconsin Breast Cancer Dataset, disponível no repositório
-UCI Machine Learning, contém medições computadorizadas de
-núcleos celulares obtidas por punção aspirativa com agulha
-fina (PAAF) [4].
-Total de amostras 569
-Features numéricas 30
-Classes M (212) / B (357)
-Divisão treino/teste 80% / 20%
-Semente aleatória random_state = 42
-As 30 features são derivadas de 10 medidas base (raio,
-textura, perímetro, área, suavidade, compacidade,
-concavidade, pontos côncavos, simetria e dimensão fractal),
-cada uma calculada como média, erro padrão e pior valor. Uma
-coluna vazia (Unnamed: 32) foi removida durante o préprocessamento.
 
-O Algoritmo KNN
-O KNN classifica um ponto de teste x calculando sua distância a todos os pontos de treino e selecionando os k mais próximos. A classe prevista é a mais frequente entre os vizinhos:
+Objetivos:
 
-d(x, xᵢ) = √( Σⱼ (xⱼ − xᵢⱼ)² )
-Distância euclidiana entre dois pontos no espaço de features
+Objetivo Geral
 
-O valor de k controla o balanço entre viés e variância: valores pequenos tornam o modelo sensível a ruído; valores grandes podem suavizar demais as fronteiras de decisão. Neste trabalho, k foi variado de 1 a 8.
+Avaliar a eficácia do algoritmo K-Nearest Neighbors (KNN) na classificação de tumores mamários como benignos ou malignos, utilizando o Wisconsin Breast Cancer Dataset, considerando diferentes técnicas de pré-processamento e seleção de atributos.
+
+Objetivos Específicos
+
+* Implementar o algoritmo K-Nearest Neighbors (KNN) para classificação supervisionada de dados.
+* Aplicar e comparar técnicas de pré-processamento, incluindo normalização e padronização dos atributos.
+* Avaliar o impacto do hiperparâmetro k no desempenho do modelo.
+* Comparar os resultados obtidos com e sem pré-processamento dos dados.
+* Investigar o desempenho do modelo utilizando subconjuntos de atributos específicos.
+* Analisar a acurácia do modelo em diferentes configurações experimentais.
+* Identificar a melhor combinação de pré-processamento, valor de k e atributos para maximizar o desempenho do classificador.
 
 
 Metodologia
@@ -82,27 +66,26 @@ Assim: área grande + dimensão fractal elevada = tumor com núcleo grande e con
 
 Referências Bibliográficas
 
-[1]STREET, W. N.; WOLBERG, W. H.; MANGASARIAN, O. L.
-Nuclear feature extraction for breast tumor diagnosis. IS&T/SPIE Symposium on Electronic Imaging, v. 1905, p. 861–870, 1993.
-Disponível em: https://www.semanticscholar.org/paper/Nuclear-feature-extraction-for-breast-tumor-Street-Wolberg/53f0fbb425bc14468eb3bf96b2e1d41ba8087f36
-Acesso em: 16 maio 2026.
 
-[2]MITCHELL, T. M.
-Machine Learning. McGraw-Hill, 1997. cap. 8 – Instance-Based Learning.
-Disponível em: https://www.cs.cmu.edu/~tom/files/MachineLearningTomMitchell.pdf
-Acesso em: 17 maio 2026.
+[1] WORLD HEALTH ORGANIZATION. Breast cancer. Geneva: WHO, 2024.
+Disponível em: https://books.google.com.br/books?hl=pt-BR&lr=&id=q6QOEQAAQBAJ&oi=fnd&pg=PR5&dq=WORLD+HEALTH+ORGANIZATION.+Breast+cancer.+Geneva:+WHO,+2024.&ots=reVXYE5K6U&sig=B_fE8-yoPg_nAwbe7jjagK9ambk#v=onepage&q=WORLD%20HEALTH%20ORGANIZATION.%20Breast%20cancer.%20Geneva%3A%20WHO%2C%202024.&f=false
+Acesso em: 20 maio 2026.
 
-[3]GÉRON, A.
-Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow. 3. ed. O’Reilly Media, 2022.
-Disponível em: https://www.oreilly.com/library/view/hands-on-machine-learning/9781098125967/
-Acesso em: 16 maio 2026.
+[2] KOUROU, K.; EXARCHOS, T. P.; EXARCHOS, K. P.; KARAMOUZIS, M. V.; FOTIADIS, D. I. Machine learning applications in cancer prognosis and prediction. Computational and Structural Biotechnology Journal, v. 13, p. 8–17, 2015.
+Disponível em: https://www.sciencedirect.com/science/article/pii/S2001037014000464
+Acesso em: 30 maio 2026
 
-[4]UCI Machine Learning Repository.
+[3]UCI Machine Learning Repository.
 Breast Cancer Wisconsin (Diagnostic) Data Set.
 Disponível em: https://www.kaggle.com/datasets/krupadharamshi/breast-cancer-dataset/data
 Acesso em: abril 2025.
 
-[5]DUDA, R. O.; HART, P. E.; STORK, D. G.
-Pattern Classification. 2. ed. Wiley-Interscience, 2000.
-Disponível em: https://www.researchgate.net/publication/228058014_Pattern_Classification
+[4] COVER, T. M.; HART, P. E. Nearest neighbor pattern classification. IEEE Transactions on Information Theory, v. 13, n. 1, p. 21–27, 1967.
+Disponível em:https://isl.stanford.edu/~cover/papers/transIT/0021cove.pdf
+Acesso em: 20 maio 2026
+
+[5] MITCHELL, T. M.
+Machine Learning. McGraw-Hill, 1997. cap. 8 – Instance-Based Learning.
+Disponível em: https://www.cs.cmu.edu/~tom/files/MachineLearningTomMitchell.pdf
 Acesso em: 17 maio 2026.
+
