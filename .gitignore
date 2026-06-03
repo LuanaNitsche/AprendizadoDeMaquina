@@ -1,0 +1,22 @@
+# ── Ambientes virtuais ──────────────────────────────────────────────────────
+.venv/
+
+# ── Python cache ─────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ── Jupyter ──────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── Ferramentas de qualidade ──────────────────────────────────────────────────
+.ruff_cache/
+
+# ── Modelos serializados ──────────────────────────────────────────────────────
+*.pkl
+
+# ── Imagens geradas por scripts ───────────────────────────────────────────────
+amostra.png
+historico_rna.png
+historico_cnn.png
