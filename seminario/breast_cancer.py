@@ -1,222 +1,174 @@
-import pandas as pd
 import numpy as np
-from knn import KNN
-
-# =========================
-# 1. INICIALIZAÇÃO
-# =========================
-knn = KNN()
-
-# =========================
-# 2. CARREGAR DATASET
-# =========================
-df = pd.read_csv("seminario/data.csv")
-
-df = df.drop(columns=["id"])
-df = df.dropna(axis=1, how="all")  # remove colunas 100% NaN
-df["diagnosis"] = df["diagnosis"].map({"M": 1, "B": 0})
-
-X = df.drop(columns=["diagnosis"]).values
-y = df["diagnosis"].values
-
-# =========================
-# 3. DIVISÃO TREINO / TESTE
-# =========================
-# usando split manual simples (como no seu exemplo original do .mat)
+import pandas as pd
 from sklearn.model_selection import train_test_split
 
-grupoTrain, grupoTest, trainRots, testRots = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+from knn import KNN
 
-# =========================
-# 4. COMPARAÇÃO: SEM / NORMALIZAÇÃO / PADRONIZAÇÃO
-# =========================
-melhores = {}
+CAMINHO_DADOS = "data.csv"
+PROPORCAO_TESTE = 0.2
+SEMENTE = 42
+FAIXA_K = range(1, 9)
 
-for tipo in [None, "normalizar", "padronizar"]:
-    print(f"\n=========================")
-    print(f"TIPO: {tipo}")
-    print(f"=========================")
+SUBCONJUNTOS = {
+    "[0,1]": [0, 1],
+    "[1,2]": [1, 2],
+    "[23,29]": [23, 29],
+}
 
-    if tipo is None:
-        train = grupoTrain
-        test = grupoTest
-    elif tipo == "normalizar":
-        train, test = knn.normalizacao(grupoTrain, grupoTest)
-    elif tipo == "padronizar":
-        train, test = knn.padronizacao(grupoTrain, grupoTest)
 
+def carregar_dados(caminho: str) -> tuple[np.ndarray, np.ndarray]:
+    df = pd.read_csv(caminho)
+    df = df.drop(columns=["id"])
+    df = df.dropna(axis=1, how="all")
+    df["diagnosis"] = df["diagnosis"].map({"M": 1, "B": 0})
+    X = df.drop(columns=["diagnosis"]).values
+    y = df["diagnosis"].values
+    return X, y
+
+
+def dividir_dados(
+    X: np.ndarray,
+    y: np.ndarray,
+    proporcao_teste: float = PROPORCAO_TESTE,
+    semente: int = SEMENTE,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    return train_test_split(X, y, test_size=proporcao_teste, random_state=semente)
+
+
+def aplicar_preprocessamento(
+    knn: KNN,
+    tipo: str | None,
+    treino: np.ndarray,
+    teste: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    if tipo == "normalizar":
+        return knn.normalizacao(treino, teste)
+    if tipo == "padronizar":
+        return knn.padronizacao(treino, teste)
+    return treino, teste
+
+
+def buscar_melhor_k(
+    knn: KNN,
+    treino: np.ndarray,
+    rotulos_treino: np.ndarray,
+    teste: np.ndarray,
+    rotulos_teste: np.ndarray,
+) -> tuple[int, float]:
     melhor_k = 0
-    melhor_acc = 0
+    melhor_acuracia = 0.0
 
-    for k in range(1, 9):
-        rotuloPrevisto = knn.meuKnn(train, trainRots, test, k)
-        acc = np.mean(rotuloPrevisto == testRots)
+    for k in FAIXA_K:
+        rotulos_previstos = knn.meuKnn(treino, rotulos_treino, teste, k)
+        acuracia = np.mean(rotulos_previstos == rotulos_teste)
+        print(f"  k={k} -> acurácia={acuracia:.4f}")
 
-        print(f"k={k} -> acurácia={acc:.4f}")
-
-        if acc > melhor_acc:
-            melhor_acc = acc
+        if acuracia > melhor_acuracia:
+            melhor_acuracia = acuracia
             melhor_k = k
 
-    melhores[tipo] = (melhor_k, melhor_acc)
-
-    print(f"\n>>> Melhor k ({tipo}): {melhor_k} -> {melhor_acc:.4f}")
-
-knn.visualizaPontos(train, trainRots, 0, 1)
-
-# =========================
-# 5. SUBCONJUNTOS (COM PRÉ-PROCESSAMENTO = NORMALIZAÇÃO)
-# =========================
-print("\n=========================")
-print("SUBCONJUNTOS (NORMALIZAÇÃO)")
-print("=========================")
-
-train_n, test_n = knn.normalizacao(grupoTrain, grupoTest)
-
-# ---------- subset [0,1]
-print("\n--- SUBSET [0,1] ---")
-best_k_01 = 0
-best_acc_01 = 0
-
-for k in range(1, 9):
-    r = knn.meuKnn(train_n[:, [0, 1]], trainRots, test_n[:, [0, 1]], k)
-    acc = np.mean(r == testRots)
-
-    print(f"k={k} -> acurácia={acc:.4f}")
-
-    if acc > best_acc_01:
-        best_acc_01 = acc
-        best_k_01 = k
-
-print(f">>> Melhor [0,1]: k={best_k_01} -> {best_acc_01:.4f}")
+    return melhor_k, melhor_acuracia
 
 
-# ---------- subset [1,2]
-print("\n--- SUBSET [1,2] ---")
-best_k_12 = 0
-best_acc_12 = 0
+def avaliar_preprocessamentos(
+    knn: KNN,
+    treino_bruto: np.ndarray,
+    teste_bruto: np.ndarray,
+    rotulos_treino: np.ndarray,
+    rotulos_teste: np.ndarray,
+) -> dict[str, tuple[int, float]]:
+    resultados = {}
 
-for k in range(1, 9):
-    r = knn.meuKnn(train_n[:, [1, 2]], trainRots, test_n[:, [1, 2]], k)
-    acc = np.mean(r == testRots)
+    for tipo in [None, "normalizar", "padronizar"]:
+        print(f"\n=========================")
+        print(f"TIPO: {tipo}")
+        print(f"=========================")
 
-    print(f"k={k} -> acurácia={acc:.4f}")
+        treino, teste = aplicar_preprocessamento(knn, tipo, treino_bruto, teste_bruto)
+        melhor_k, melhor_acuracia = buscar_melhor_k(
+            knn, treino, rotulos_treino, teste, rotulos_teste
+        )
+        resultados[str(tipo)] = (melhor_k, melhor_acuracia)
+        print(f"\n>>> Melhor k ({tipo}): {melhor_k} -> {melhor_acuracia:.4f}")
 
-    if acc > best_acc_12:
-        best_acc_12 = acc
-        best_k_12 = k
-
-print(f">>> Melhor [1,2]: k={best_k_12} -> {best_acc_12:.4f}")
-
-knn.visualizaPontos(train_n[:, [0, 1]], trainRots, 0, 1)
-
-
-# =========================
-# 5. SUBCONJUNTOS (COM PRÉ-PROCESSAMENTO = PADRONIZAÇÃO)
-# =========================
-print("\n=========================")
-print("SUBCONJUNTOS (PADRONIZAÇÃO)")
-print("=========================")
-
-train_p, test_p = knn.padronizacao(grupoTrain, grupoTest)
-
-# ---------- subset [0,1]
-print("\n--- SUBSET [0,1] ---")
-best_k_01 = 0
-best_acc_01 = 0
-
-for k in range(1, 9):
-    r = knn.meuKnn(train_p[:, [0, 1]], trainRots, test_p[:, [0, 1]], k)
-    acc = np.mean(r == testRots)
-
-    print(f"k={k} -> acurácia={acc:.4f}")
-
-    if acc > best_acc_01:
-        best_acc_01 = acc
-        best_k_01 = k
-
-print(f">>> Melhor [0,1]: k={best_k_01} -> {best_acc_01:.4f}")
-
-# ---------- subset [1,2]
-print("\n--- SUBSET [1,2] ---")
-best_k_12 = 0
-best_acc_12 = 0
-
-for k in range(1, 9):
-    r = knn.meuKnn(train_p[:, [1, 2]], trainRots, test_p[:, [1, 2]], k)
-    acc = np.mean(r == testRots)
-
-    print(f"k={k} -> acurácia={acc:.4f}")
-
-    if acc > best_acc_12:
-        best_acc_12 = acc
-        best_k_12 = k
-
-print(f">>> Melhor [1,2]: k={best_k_12} -> {best_acc_12:.4f}")
+    return resultados
 
 
-# =========================
-# 5. SUBCONJUNTOS (COM MELHOR PRÉ-PROCESSAMENTO 23 e 29)
-# =========================
-print("\n=========================")
-print("SUBCONJUNTOS (PADRONIZAÇÃO)")
-print("=========================")
+def avaliar_subconjuntos(
+    knn: KNN,
+    treino: np.ndarray,
+    teste: np.ndarray,
+    rotulos_treino: np.ndarray,
+    rotulos_teste: np.ndarray,
+    nome_preprocessamento: str,
+) -> dict[str, tuple[int, float]]:
+    print(f"\n=========================")
+    print(f"SUBCONJUNTOS ({nome_preprocessamento.upper()})")
+    print(f"=========================")
 
-train_p2, test_p2 = knn.padronizacao(grupoTrain, grupoTest)
+    resultados = {}
 
-# ---------- subset [23,29]
-print("\n--- SUBSET [23,29] ---")
-best_k_2329 = 0
-best_acc_2329 = 0
+    for nome, colunas in SUBCONJUNTOS.items():
+        print(f"\n--- SUBSET {nome} ---")
+        melhor_k, melhor_acuracia = buscar_melhor_k(
+            knn,
+            treino[:, colunas],
+            rotulos_treino,
+            teste[:, colunas],
+            rotulos_teste,
+        )
+        resultados[nome] = (melhor_k, melhor_acuracia)
+        print(f">>> Melhor {nome}: k={melhor_k} -> {melhor_acuracia:.4f}")
 
-for k in range(1, 9):
-    r = knn.meuKnn(train_p2[:, [23, 29]], trainRots, test_p2[:, [23, 29]], k)
-    acc = np.mean(r == testRots)
-
-    print(f"k={k} -> acurácia={acc:.4f}")
-
-    if acc > best_acc_2329:
-        best_acc_2329 = acc
-        best_k_2329 = k
-
-print(f">>> Melhor [23,29]: k={best_k_2329} -> {best_acc_2329:.4f}")
-
-print("\n=========================")
-print("SUBCONJUNTOS (NORMALIZAÇÃO)")
-print("=========================")
-
-train_n2, test_n2 = knn.normalizacao(grupoTrain, grupoTest)
-
-# ---------- subset [23,29]
-print("\n--- SUBSET [23,29] ---")
-best_k_2329 = 0
-best_acc_2329 = 0
-
-for k in range(1, 9):
-    r = knn.meuKnn(train_n2[:, [23, 29]], trainRots, test_n2[:, [23, 29]], k)
-    acc = np.mean(r == testRots)
-
-    print(f"k={k} -> acurácia={acc:.4f}")
-
-    if acc > best_acc_2329:
-        best_acc_2329 = acc
-        best_k_2329 = k
-
-print(f">>> Melhor [23,29]: k={best_k_2329} -> {best_acc_2329:.4f}")
+    return resultados
 
 
-# =========================
-# 6. RESULTADO FINAL
-# =========================
-print("\n=========================")
-print("RESULTADO FINAL")
-print("=========================")
+def imprimir_resultados_finais(
+    resultados_preprocessamentos: dict[str, tuple[int, float]],
+    resultados_subconjuntos: dict[str, dict[str, tuple[int, float]]],
+) -> None:
+    print("\n=========================")
+    print("RESULTADO FINAL")
+    print("=========================")
 
-for tipo, (k, acc) in melhores.items():
-    print(f"{tipo}: melhor k={k} -> {acc:.4f}")
+    print("\nPré-processamentos (dados completos):")
+    for tipo, (k, acuracia) in resultados_preprocessamentos.items():
+        print(f"  {tipo}: melhor k={k} -> {acuracia:.4f}")
 
-print(f"\nSubset [0,1]: k={best_k_01} -> {best_acc_01:.4f}")
-print(f"Subset [1,2]: k={best_k_12} -> {best_acc_12:.4f}")
-print(f"Subset [23,29]: k={best_k_2329} -> {best_acc_2329:.4f}")
+    for preprocessamento, resultados in resultados_subconjuntos.items():
+        print(f"\nSubconjuntos com {preprocessamento}:")
+        for subset, (k, acuracia) in resultados.items():
+            print(f"  Subset {subset}: k={k} -> {acuracia:.4f}")
+
+
+def executar() -> None:
+    knn = KNN()
+
+    X, y = carregar_dados(CAMINHO_DADOS)
+    treino_bruto, teste_bruto, rotulos_treino, rotulos_teste = dividir_dados(X, y)
+
+    resultados_preprocessamentos = avaliar_preprocessamentos(
+        knn, treino_bruto, teste_bruto, rotulos_treino, rotulos_teste
+    )
+
+    knn.visualizaPontos(treino_bruto, rotulos_treino, 0, 1)
+
+    treino_norm, teste_norm = knn.normalizacao(treino_bruto, teste_bruto)
+    treino_pad, teste_pad = knn.padronizacao(treino_bruto, teste_bruto)
+
+    resultados_subconjuntos = {
+        "normalização": avaliar_subconjuntos(
+            knn, treino_norm, teste_norm, rotulos_treino, rotulos_teste, "normalização"
+        ),
+        "padronização": avaliar_subconjuntos(
+            knn, treino_pad, teste_pad, rotulos_treino, rotulos_teste, "padronização"
+        ),
+    }
+
+    knn.visualizaPontos(treino_norm[:, [0, 1]], rotulos_treino, 0, 1)
+
+    imprimir_resultados_finais(resultados_preprocessamentos, resultados_subconjuntos)
+
+
+if __name__ == "__main__":
+    executar()
