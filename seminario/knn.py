@@ -153,6 +153,60 @@ class KNN:
         )
         return acc
 
+    def matrizConfusao(
+        self,
+        rotuloPrevisto: np.ndarray,
+        rotuloVerdadeiro: np.ndarray,
+        nomeClasses: tuple[str, str] = ("Benigno (0)", "Maligno (1)"),
+    ) -> dict[str, float]:
+        """
+        Calcula e imprime a matriz de confusão para um problema binário (rótulos 0/1),
+        junto das métricas derivadas: precisão, revocação (sensibilidade),
+        especificidade e F1-score.
+
+        Args:
+            rotuloPrevisto (np.ndarray): vetor de rótulos previstos (0/1)
+            rotuloVerdadeiro (np.ndarray): vetor de rótulos verdadeiros (0/1)
+            nomeClasses (tuple[str, str]): nomes das classes (negativa, positiva)
+
+        Returns:
+            dict[str, float]: VP, VN, FP, FN e as métricas derivadas
+        """
+        vp = int(np.sum((rotuloPrevisto == 1) & (rotuloVerdadeiro == 1)))
+        vn = int(np.sum((rotuloPrevisto == 0) & (rotuloVerdadeiro == 0)))
+        fp = int(np.sum((rotuloPrevisto == 1) & (rotuloVerdadeiro == 0)))
+        fn = int(np.sum((rotuloPrevisto == 0) & (rotuloVerdadeiro == 1)))
+
+        precisao = vp / (vp + fp) if (vp + fp) > 0 else 0.0
+        revocacao = vp / (vp + fn) if (vp + fn) > 0 else 0.0
+        especificidade = vn / (vn + fp) if (vn + fp) > 0 else 0.0
+        f1 = (
+            2 * precisao * revocacao / (precisao + revocacao)
+            if (precisao + revocacao) > 0
+            else 0.0
+        )
+
+        neg, pos = nomeClasses
+        print("\nMatriz de confusão:")
+        print(f"{'':>20}  Previsto {neg:<12}  Previsto {pos}")
+        print(f"{'Real ' + neg:>20}  {vn:^22d}  {fp:^14d}")
+        print(f"{'Real ' + pos:>20}  {fn:^22d}  {vp:^14d}")
+        print(f"\nPrecisão:        {precisao:.4f}")
+        print(f"Revocação:       {revocacao:.4f}")
+        print(f"Especificidade:  {especificidade:.4f}")
+        print(f"F1-score:        {f1:.4f}")
+
+        return {
+            "VP": vp,
+            "VN": vn,
+            "FP": fp,
+            "FN": fn,
+            "precisao": precisao,
+            "revocacao": revocacao,
+            "especificidade": especificidade,
+            "f1": f1,
+        }
+
     def _getDadosRotulo(
         self, dados: np.ndarray, rotulos: np.ndarray, rotulo: int, indice: int
     ) -> list[float]:
